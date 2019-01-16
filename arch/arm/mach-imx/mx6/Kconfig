@@ -516,6 +516,15 @@ config TARGET_ZC5601
 	select SUPPORT_SPL
 	imply CMD_DM
 
+config TARGET_MX6SXRTSSD
+       bool "Support mx6sxrtssd"
+       select BOARD_LATE_INIT
+       select MX6SX
+       select DM
+       select DM_THERMAL
+       select SUPPORT_SPL
+       imply CMD_DM
+
 endchoice
 
 config SYS_SOC
@@ -545,6 +554,7 @@ source "board/freescale/mx6sabresd/Kconfig"
 source "board/freescale/mx6slevk/Kconfig"
 source "board/freescale/mx6sllevk/Kconfig"
 source "board/freescale/mx6sxsabresd/Kconfig"
+source "board/freescale/mx6sxrtssd/Kconfig"
 source "board/freescale/mx6sxsabreauto/Kconfig"
 source "board/freescale/mx6ul_14x14_evk/Kconfig"
 source "board/freescale/mx6ullevk/Kconfig"
