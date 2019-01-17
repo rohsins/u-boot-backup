@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * Copyright 2014-2015 Freescale Semiconductor, Inc.
- * Copyright Jasbir Matharu
- * Copyright 2015 UDOO Team
+ * Copyright Rohit Singh
+ * Copyright 2019 RTS Hardware Division Team
  *
- * Configuration settings for the UDOO NEO board.
+ * Configuration settings for the Board by Real Time Solutions.
  */
 
 #ifndef __CONFIG_H
@@ -25,28 +25,6 @@
 #define CONFIG_MXC_UART_BASE		UART1_BASE
 #define CONFIG_SYS_MMC_ENV_DEV		0  /*USDHC2*/
 
-#ifdef CONFIG_IMX_BOOTAUX
-/* Set to QSPI2 B flash at default */
-#define CONFIG_SYS_AUXCORE_BOOTDATA 0x78000000
-
-#define UPDATE_M4_ENV \
-          "m4image=m4_qspi.bin\0" \
-	  "loadm4image=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${m4image}\0" \
-	  "update_m4_from_sd="						\
-	          "if sf probe 1:0; then " \
-	                  "if run loadm4image; then " \
-	                          "setexpr fw_sz ${filesize} + 0xffff; " \
-	                          "setexpr fw_sz ${fw_sz} / 0x10000; "				\
-	                          "setexpr fw_sz ${fw_sz} * 0x10000; "    \
-	                          "sf erase 0x0 ${fw_sz}; " \
-	                          "sf write ${loadaddr} 0x0 ${filesize}; " \
-	                  "fi; " \
-	          "fi\0" \
-	  "m4boot=sf probe 1:0; bootaux "__stringify(CONFIG_SYS_AUXCORE_BOOTDATA)"\0"
-#else
-#define UPDATE_M4_ENV ""
-#endif
-
 /* Linux only */
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"console=ttymxc0,115200\0" \
@@ -58,6 +36,7 @@
 	"ip_dyn=yes\0" \
 	"mmcdev=0\0" \
 	"mmcrootfstype=ext4\0" \
+	"loadaddr=0x80800000\0" \
 	"findfdt="\
 		"if test $board_name = BASIC; then " \
 			"setenv fdtfile imx6sx-udoo-neo-basic.dtb; fi; " \
@@ -73,6 +52,9 @@
 	"pxefile_addr_r=" __stringify(CONFIG_LOADADDR) "\0" \
 	"ramdisk_addr_r=0x84000000\0" \
 	"scriptaddr=" __stringify(CONFIG_LOADADDR) "\0" \
+	"loadimage=fatload mmc 0:1 ${loadaddr} zImage\0" \
+	"loadfdt=fatload mmc 0:1 ${fdt_addr} dts/${fdtfile}\0" \
+	"mmcargs=setenv bootargs console=ttymxc0,115200 root=/dev/mmcblk0p2 rootwait rw rootfstype=ext4 uart_from_osc clk_ignore_unused cpuidle.off=1 consoleblank=0\0" \
 	BOOTENV
 
 #define BOOT_TARGET_DEVICES(func) \

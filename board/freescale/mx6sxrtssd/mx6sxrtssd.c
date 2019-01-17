@@ -429,7 +429,8 @@ static char *board_string(void)
 
 int checkboard(void)
 {
-	printf("Board: UDOO Neo %s\n", board_string());
+  //printf("Board: UDOO Neo %s\n", board_string());
+        printf("Board by Real Time Solutions - Hardware Division\n");
 	return 0;
 }
 
