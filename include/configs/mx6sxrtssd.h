@@ -25,18 +25,18 @@
 #define CONFIG_MXC_UART_BASE		UART1_BASE
 #define CONFIG_SYS_MMC_ENV_DEV		0  /*USDHC2*/
 
+//#define CONFIG_LOADADDR                 0x80800000
+#define CONFIG_MMCROOT                    "/dev/mmcblk0p2"
+
 /* Linux only */
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"console=ttymxc0,115200\0" \
+	"console=ttymxc0\0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
 	"fdtfile=undefined\0" \
 	"fdt_addr=0x83000000\0" \
 	"fdt_addr_r=0x83000000\0" \
 	"ip_dyn=yes\0" \
-	"mmcdev=0\0" \
-	"mmcrootfstype=ext4\0" \
-	"loadaddr=0x80800000\0" \
 	"findfdt="\
 		"if test $board_name = BASIC; then " \
 			"setenv fdtfile imx6sx-udoo-neo-basic.dtb; fi; " \
@@ -52,16 +52,47 @@
 	"pxefile_addr_r=" __stringify(CONFIG_LOADADDR) "\0" \
 	"ramdisk_addr_r=0x84000000\0" \
 	"scriptaddr=" __stringify(CONFIG_LOADADDR) "\0" \
-	"loadimage=fatload mmc 0:1 ${loadaddr} zImage\0" \
-	"loadfdt=fatload mmc 0:1 ${fdt_addr} dts/${fdtfile}\0" \
-	"mmcargs=setenv bootargs console=ttymxc0,115200 root=/dev/mmcblk0p2 rootwait rw rootfstype=ext4 uart_from_osc clk_ignore_unused cpuidle.off=1 consoleblank=0\0" \
-	BOOTENV
-
+	"script=uEnv.txt\0" \
+	"image=/zImage\0" \
+        "m4boot=\0" \
+	"m4mmcargs=uart_from_osc clk_ignore_unused cpuidle.off=1\0" \
+        "mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
+	"mmcpart=1\0" \
+	"mmcrootfstype=ext4\0" \
+	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
+	"mmcautodetect=no\0" \
+	"boot_fdt=try\0" \
+	"baudrate=115200\0" \
+	"mmcargs=setenv bootargs console=${console},${baudrate} " \
+	        "root=${mmcroot} rootfstype=${mmcrootfstype} ${m4mmcargs} consoleblank=0\0" \
+	"loadbootscript=" \
+	        "fatload mmc ${mmcdev}:${mmcpart} ${scriptaddr} ${script};\0" \
+	"bootscript=echo Running bootscript from mmc ...; " \
+	        "env import -t ${scriptaddr} ${filesize};\0" \
+	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
+	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} dts/${fdtfile}\0" \
+	"mmcboot=echo Booting from mmc ...; " \
+	        "run mmcargs; " \
+		"run loadimage; " \
+		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+		        "if run loadfdt; then " \
+	                        "bootz ${loadaddr} - ${fdt_addr}; " \
+			"else " \
+				"if test ${boot_fdt} = try; then " \
+				        "bootz; " \
+				"else " \
+				        "echo WARNING: Cannot load the Device Tree; " \
+				"fi; " \
+			"fi; " \
+		"else " \
+		        "bootz; " \
+		"fi;\0"
+	    
 #define BOOT_TARGET_DEVICES(func) \
 	func(MMC, mmc, 0) \
 	func(DHCP, dhcp, na)
 
-#include <config_distro_bootcmd.h>
+//#include <config_distro_bootcmd.h>
 
 /* Miscellaneous configurable options */
 #define CONFIG_SYS_MEMTEST_START	0x80000000
