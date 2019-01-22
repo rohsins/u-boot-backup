@@ -37,8 +37,6 @@
 	"fdt_addr=0x83000000\0" \
 	"fdt_addr_r=0x83000000\0" \
 	"ip_dyn=yes\0" \
-	"video_output=false\0" \
-	"m4_enabled=false\0" \
 	"findfdt="\
 		"if test $board_name = BASIC; then " \
 			"setenv fdtfile imx6sx-udoo-neo-basic.dtb; fi; " \
