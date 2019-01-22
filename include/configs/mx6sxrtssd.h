@@ -37,13 +37,32 @@
 	"fdt_addr=0x83000000\0" \
 	"fdt_addr_r=0x83000000\0" \
 	"ip_dyn=yes\0" \
+	"video_output=false\0" \
+	"m4_enabled=false\0" \
 	"findfdt="\
 		"if test $board_name = BASIC; then " \
 			"setenv fdtfile imx6sx-udoo-neo-basic.dtb; fi; " \
 		"if test $board_name = BASICKS; then " \
 			"setenv fdtfile imx6sx-udoo-neo-basic.dtb; fi; " \
 		"if test $board_name = FULL; then " \
-			"setenv fdtfile imx6sx-udoo-neo-full.dtb; fi; " \
+	                "setenv fdtfile imx6sx-udoo-neo-full.dtb; fi; " \
+		"if test $board_name = mx6sxrtssd; then " \
+	                "if test ${video_output} = lvds7 || test ${video_output} = lvds15; then " \
+	                        "if test ${m4_enabled} = true; then " \
+	                                "setenv fdtfile imx6sx-udoo-neo-full-${video_output}-m4.dtb; " \
+	                        "else " \
+                                        "setenv fdtfile imx6sx-udoo-neo-full-${video_output}.dtb;" \
+	                        "fi; " \
+                        "elif test $video_output = hdmi; then " \
+	                                "if test $m4_enabled = true; then " \
+	                                        "setenv fdtfile imx6sx-udoo-neo-full-${video_output}-m4.dtb; " \
+	                                "else " \
+	                                        "setenv fdtfile imx6sx-udoo-neo-full-${video_output}.dtb; " \
+	                                "fi; " \
+			"else " \
+				"setenv fdtfile imx6sx-udoo-neo-full.dtb; " \
+	                "fi; " \
+	        "fi; " \
 		"if test $board_name = EXTENDED; then " \
 			"setenv fdtfile imx6sx-udoo-neo-extended.dtb; fi; " \
 		"if test $fdtfile = UNDEFINED; then " \
