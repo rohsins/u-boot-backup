@@ -42,17 +42,17 @@
 			"setenv fdtfile imx6sx-udoo-neo-basic.dtb; fi; " \
 		"if test $board_name = BASICKS; then " \
 			"setenv fdtfile imx6sx-udoo-neo-basic.dtb; fi; " \
-		"if test $board_name = FULL; then " \
+		"if test $board_name = FULLS; then " \
 	                "setenv fdtfile imx6sx-udoo-neo-full.dtb; fi; " \
-		"if test $board_name = mx6sxrtssd; then " \
+		"if test $board_name = mx6sxrtssd || test $board_name = FULL; then " \
 	                "if test ${video_output} = lvds7 || test ${video_output} = lvds15; then " \
 	                        "if test ${m4_enabled} = true; then " \
 	                                "setenv fdtfile imx6sx-udoo-neo-full-${video_output}-m4.dtb; " \
 	                        "else " \
                                         "setenv fdtfile imx6sx-udoo-neo-full-${video_output}.dtb;" \
 	                        "fi; " \
-                        "elif test $video_output = hdmi; then " \
-	                                "if test $m4_enabled = true; then " \
+                        "elif test ${video_output} = hdmi; then " \
+	                                "if test ${m4_enabled} = true; then " \
 	                                        "setenv fdtfile imx6sx-udoo-neo-full-${video_output}-m4.dtb; " \
 	                                "else " \
 	                                        "setenv fdtfile imx6sx-udoo-neo-full-${video_output}.dtb; " \
